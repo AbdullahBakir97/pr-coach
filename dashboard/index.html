@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PR Coach - Write Better Pull Requests</title>
+  <style>
+    :root { --bg: #0d1117; --surface: #161b22; --border: #30363d; --text: #e6edf3; --muted: #8b949e; --accent: #f78166; --green: #3fb950; --yellow: #d29922; --red: #f85149; --purple: #bc8cff; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+    header { border-bottom: 1px solid var(--border); padding: 20px 0; }
+    header .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo { display: flex; align-items: center; gap: 12px; font-size: 20px; font-weight: 600; color: var(--text); text-decoration: none; }
+    .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, var(--accent), var(--yellow)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .nav-links { display: flex; gap: 24px; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; }
+    .nav-links a:hover { color: var(--text); }
+    .hero { text-align: center; padding: 80px 0 60px; }
+    .hero h1 { font-size: 48px; font-weight: 800; line-height: 1.2; margin-bottom: 16px; }
+    .hero h1 span { background: linear-gradient(135deg, var(--accent), var(--yellow)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero p { font-size: 20px; color: var(--muted); max-width: 600px; margin: 0 auto 32px; }
+    .btn { padding: 12px 28px; border-radius: 8px; font-size: 16px; font-weight: 600; text-decoration: none; transition: all 0.2s; border: none; cursor: pointer; display: inline-block; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: #f99a85; }
+    .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .cta-group { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+    .demo { padding: 60px 0; border-top: 1px solid var(--border); }
+    .demo h2 { text-align: center; font-size: 28px; margin-bottom: 8px; }
+    .demo .subtitle { text-align: center; color: var(--muted); margin-bottom: 32px; }
+    .demo-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+    .demo-input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px; color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; resize: none; }
+    .demo-input:focus { outline: none; border-color: var(--accent); }
+    .demo-btn { background: var(--accent); color: #fff; padding: 10px 24px; border-radius: 6px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 12px; }
+    .demo-btn:hover { background: #f99a85; }
+
+    .result { margin-top: 24px; display: none; }
+    .result.active { display: block; }
+    .result-header { display: flex; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+    .score-card { flex: 1; min-width: 140px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; }
+    .score-card .label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 4px; }
+    .score-card .value { font-size: 32px; font-weight: 700; }
+    .tag { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; margin-top: 4px; }
+    .tag-green { background: rgba(63,185,80,0.15); color: var(--green); }
+    .tag-yellow { background: rgba(210,153,34,0.15); color: var(--yellow); }
+    .tag-red { background: rgba(248,81,73,0.15); color: var(--red); }
+    .checks-list { list-style: none; margin-top: 12px; }
+    .checks-list li { padding: 8px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 6px; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+    .check-icon { font-size: 16px; }
+
+    .features { padding: 60px 0; border-top: 1px solid var(--border); }
+    .features h2 { text-align: center; font-size: 28px; margin-bottom: 32px; }
+    .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+    .feature-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+    .feature-card .icon { font-size: 28px; margin-bottom: 8px; }
+    .feature-card h3 { font-size: 15px; margin-bottom: 6px; }
+    .feature-card p { font-size: 13px; color: var(--muted); }
+
+    .config-section { padding: 60px 0; border-top: 1px solid var(--border); }
+    .config-section h2 { text-align: center; font-size: 28px; margin-bottom: 8px; }
+    .config-section .subtitle { text-align: center; color: var(--muted); margin-bottom: 32px; }
+    .config-block { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; font-family: 'SFMono-Regular', Consolas, monospace; font-size: 13px; white-space: pre; overflow-x: auto; color: var(--green); }
+
+    footer { border-top: 1px solid var(--border); padding: 24px 0; text-align: center; color: var(--muted); font-size: 13px; }
+    footer a { color: var(--accent); text-decoration: none; }
+    @media (max-width: 768px) { .hero h1 { font-size: 32px; } .result-header { flex-direction: column; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="#" class="logo"><div class="logo-icon">P</div>PR Coach</a>
+      <nav class="nav-links">
+        <a href="#demo">Try It</a>
+        <a href="#features">Features</a>
+        <a href="#config">Config</a>
+        <a href="https://github.com/apps/pr-coach">Install</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <h1>Write better <span>pull requests</span></h1>
+        <p>A GitHub App that coaches contributors on PR quality -- analyzes title, description, and diff, then posts actionable suggestions.</p>
+        <div class="cta-group">
+          <a href="https://github.com/apps/pr-coach" class="btn btn-primary">Install on GitHub</a>
+          <a href="#demo" class="btn btn-outline">Try the Demo</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="demo" id="demo">
+      <div class="container">
+        <h2>Analyze a Pull Request</h2>
+        <p class="subtitle">Paste a PR title and description to see how it scores</p>
+        <div class="demo-card">
+          <input class="demo-input" id="titleInput" placeholder="PR title, e.g. feat(auth): add OAuth2 login support" style="height: 44px; margin-bottom: 12px;">
+          <textarea class="demo-input" id="descInput" rows="8" placeholder="PR description...&#10;&#10;## What&#10;Describe what changed...&#10;&#10;## Why&#10;Explain the motivation...&#10;&#10;Closes #123"></textarea>
+          <button class="demo-btn" onclick="analyze()">Analyze PR</button>
+          <div class="result" id="result">
+            <div class="result-header">
+              <div class="score-card"><div class="label">Score</div><div class="value" id="scoreVal">0</div><span class="tag" id="scoreTag">-</span></div>
+              <div class="score-card"><div class="label">Quality</div><div class="value" id="qualVal" style="font-size:18px">-</div></div>
+              <div class="score-card"><div class="label">Checks</div><div class="value" id="checksVal" style="font-size:18px">-</div></div>
+            </div>
+            <ul class="checks-list" id="checksList"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="features" id="features">
+      <div class="container">
+        <h2>Features</h2>
+        <div class="feature-grid">
+          <div class="feature-card"><div class="icon">&#x1F4CB;</div><h3>Title Analysis</h3><p>Checks length, specificity, and conventional commit format</p></div>
+          <div class="feature-card"><div class="icon">&#x1F4DD;</div><h3>Description Quality</h3><p>Validates what/why sections, linked issues, test mentions, screenshots</p></div>
+          <div class="feature-card"><div class="icon">&#x1F4CA;</div><h3>Diff Analysis</h3><p>Evaluates PR size, file count, focus, and test file inclusion</p></div>
+          <div class="feature-card"><div class="icon">&#x1F3AF;</div><h3>Quality Score 0-100</h3><p>Weighted scoring across all checks with clear pass/warn/fail thresholds</p></div>
+          <div class="feature-card"><div class="icon">&#x2705;</div><h3>GitHub Checks</h3><p>Creates a Check Run with pass/neutral/fail conclusion on every PR</p></div>
+          <div class="feature-card"><div class="icon">&#x1F4AC;</div><h3>Coaching Comments</h3><p>Posts actionable suggestions with a score table and improvement tips</p></div>
+          <div class="feature-card"><div class="icon">&#x2699;&#xFE0F;</div><h3>Configurable</h3><p>Per-repo .github/pr-coach.yml for thresholds, requirements, and actions</p></div>
+          <div class="feature-card"><div class="icon">&#x1F6E1;&#xFE0F;</div><h3>Breaking Changes</h3><p>Detects and validates breaking change documentation in PR descriptions</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="config-section" id="config">
+      <div class="container">
+        <h2>Configuration</h2>
+        <p class="subtitle">Add .github/pr-coach.yml to customize per repository</p>
+        <div class="config-block"># .github/pr-coach.yml
+enabled: true
+min_score: 60
+require_linked_issue: false
+require_description: true
+require_tests: false
+max_files: 20
+max_lines: 500
+action: check  # check | comment | request-changes | block</div>
+      </div>
+    </section>
+  </main>
+
+  <footer><div class="container"><p>PR Coach &mdash; Open source GitHub App &mdash; <a href="https://github.com/AbdullahBakir97/pr-coach">GitHub</a></p></div></footer>
+
+  <script>
+    const ISSUE_RE = /(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s+#\d+|#\d+/i;
+    const TEST_RE = /(?:test|tested|testing|spec|coverage|unit test|integration test|e2e)/i;
+    const SCREENSHOT_RE = /(?:!\[.*?\]\(.*?\)|<img\s|screenshot|\.png|\.gif|\.jpg)/i;
+    const SECTION_RE = /^##?\s*(?:what|why|summary|description|changes|motivation|context)/im;
+    const CHECKLIST_RE = /- \[[ x]\]/gi;
+    const CONV_RE = /^(?:feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(?:\([^)]+\))?!?:\s+.+$/i;
+    const VAGUE = new Set(['update','fix','change','stuff','things','misc','wip','temp']);
+
+    function analyze() {
+      const title = document.getElementById('titleInput').value.trim();
+      const desc = document.getElementById('descInput').value.trim();
+      if (!title) return;
+
+      const checks = [];
+
+      // Title checks
+      if (title.length >= 10 && title.length <= 72) checks.push(['Title Length', true, `Good length (${title.length} chars)`]);
+      else if (title.length < 10) checks.push(['Title Length', false, `Too short (${title.length} chars, min 10)`]);
+      else checks.push(['Title Length', false, `Too long (${title.length} chars, max 72)`]);
+
+      const words = title.toLowerCase().split(/\s+/);
+      if (words.length >= 3) checks.push(['Title Specificity', true, 'Descriptive title']);
+      else if (words.length === 1 && VAGUE.has(words[0])) checks.push(['Title Specificity', false, `Too vague: "${title}"`]);
+      else checks.push(['Title Specificity', false, 'Add more detail (at least 3 words)']);
+
+      if (CONV_RE.test(title)) checks.push(['Conventional Format', true, 'Follows type(scope): description']);
+      else checks.push(['Conventional Format', false, 'Consider: type(scope): description']);
+
+      // Description checks
+      if (desc.length >= 50) checks.push(['Description', true, 'Detailed description']);
+      else if (desc.length >= 20) checks.push(['Description', true, 'Present but could be more detailed']);
+      else if (desc.length > 0) checks.push(['Description', false, 'Too brief (less than 20 chars)']);
+      else checks.push(['Description', false, 'No description provided']);
+
+      if (SECTION_RE.test(desc)) checks.push(['Sections', true, 'Has structured sections']);
+      else checks.push(['Sections', false, 'Add ## What / ## Why sections']);
+
+      if (ISSUE_RE.test(desc)) checks.push(['Linked Issues', true, 'References issues']);
+      else checks.push(['Linked Issues', false, 'Link with "Closes #123"']);
+
+      if (TEST_RE.test(desc)) checks.push(['Testing', true, 'Testing mentioned']);
+      else checks.push(['Testing', false, 'Describe how this was tested']);
+
+      if (SCREENSHOT_RE.test(desc)) checks.push(['Screenshots', true, 'Screenshots included']);
+      else checks.push(['Screenshots', false, 'Add screenshots for UI changes']);
+
+      const checklists = desc.match(CHECKLIST_RE);
+      if (checklists) {
+        const completed = (desc.match(/- \[x\]/gi) || []).length;
+        if (completed === checklists.length) checks.push(['Checklist', true, `Complete (${completed}/${checklists.length})`]);
+        else checks.push(['Checklist', false, `Incomplete (${completed}/${checklists.length})`]);
+      } else {
+        checks.push(['Checklist', false, 'No checklist found']);
+      }
+
+      // Calculate score
+      const weights = {'Title Length':8,'Title Specificity':7,'Conventional Format':5,'Description':15,'Sections':8,'Linked Issues':10,'Testing':10,'Screenshots':5,'Checklist':7};
+      let earned = 0, total = 0;
+      checks.forEach(([name, passed]) => { const w = weights[name] || 5; total += w; if (passed) earned += w; });
+      const score = Math.round((earned / Math.max(total, 1)) * 100);
+
+      // Display results
+      document.getElementById('result').classList.add('active');
+      document.getElementById('scoreVal').textContent = score;
+      const st = document.getElementById('scoreTag');
+      if (score >= 90) { st.textContent = 'Excellent'; st.className = 'tag tag-green'; }
+      else if (score >= 70) { st.textContent = 'Good'; st.className = 'tag tag-green'; }
+      else if (score >= 50) { st.textContent = 'Fair'; st.className = 'tag tag-yellow'; }
+      else { st.textContent = 'Poor'; st.className = 'tag tag-red'; }
+
+      const level = score >= 90 ? 'Excellent' : score >= 70 ? 'Good' : score >= 50 ? 'Fair' : score >= 30 ? 'Poor' : 'Failing';
+      document.getElementById('qualVal').textContent = level;
+
+      const passed = checks.filter(c => c[1]).length;
+      document.getElementById('checksVal').textContent = `${passed}/${checks.length}`;
+
+      const list = document.getElementById('checksList');
+      list.innerHTML = '';
+      checks.forEach(([name, ok, msg]) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span class="check-icon">${ok ? '&#x2705;' : '&#x274c;'}</span><strong>${name}</strong>: ${msg}`;
+        list.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>
