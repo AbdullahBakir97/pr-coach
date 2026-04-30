@@ -100,9 +100,10 @@ class AnalysisOrchestrator:
         files = await self._client.get_pr_files(owner, repo, pr_number)
 
         # Run analyzers
+        changed_filenames = [f.get("filename", "") for f in files]
         all_checks: list[tuple[str, bool, str]] = []
         all_checks.extend(self._title_analyzer.analyze(title))
-        all_checks.extend(self._description_analyzer.analyze(body))
+        all_checks.extend(self._description_analyzer.analyze(body, changed_filenames))
         all_checks.extend(self._diff_analyzer.analyze(diff, files))
 
         # Score

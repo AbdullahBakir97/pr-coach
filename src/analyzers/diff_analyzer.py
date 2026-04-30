@@ -9,7 +9,17 @@ from src.domain.enums import PRSize
 __all__ = ["DiffAnalyzer"]
 
 _TEST_FILE_RE = re.compile(
-    r"(?:test_|_test\.|\.test\.|\.spec\.|tests/|__tests__/|spec/)",
+    # Match common test file patterns across languages and monorepo layouts.
+    # Includes singular 'test/' and plural 'tests/', plus workspace-nested paths
+    # like 'packages/foo/test/' or 'packages/foo/__tests__/'.
+    r"(?:"
+    r"test_|_test\.|\.test\.|\.spec\.|"  # name patterns: test_x, x_test., x.test., x.spec.
+    r"(?:^|/)tests?/|"  # /test/ or /tests/ anywhere in path
+    r"(?:^|/)__tests__/|"  # /__tests__/ anywhere
+    r"(?:^|/)spec/|"  # /spec/ anywhere
+    r"(?:^|/)testing/|"  # /testing/ (some Python projects)
+    r"\.test\.t?sx?$|\.spec\.t?sx?$"  # .test.ts/.test.tsx/.spec.ts/.spec.tsx
+    r")",
     re.IGNORECASE,
 )
 

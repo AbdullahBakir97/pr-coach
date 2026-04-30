@@ -48,11 +48,22 @@ class DescriptionAnalyzer:
     - Checklist completion
     """
 
-    def analyze(self, body: str | None) -> list[tuple[str, bool, str]]:
+    # File extensions/paths that indicate the PR includes user-facing UI changes.
+    # Only when these are present do we expect screenshots in the description.
+    _UI_FILE_RE = re.compile(
+        r"\.(?:html?|css|scss|sass|less|styl|vue|svelte|jsx|tsx|mdx|astro)$"
+        r"|(?:^|/)(?:components?|pages?|views?|templates?|layouts?|ui|frontend)/",
+        re.IGNORECASE,
+    )
+
+    def analyze(self, body: str | None, changed_files: list[str] | None = None) -> list[tuple[str, bool, str]]:
         """Analyze a PR description for quality.
 
         Args:
             body: The pull request body/description text (may be None).
+            changed_files: Optional list of file paths changed in the PR.
+                When provided, the screenshot check is skipped if no UI files
+                are touched (CLI/library/Action PRs don't need screenshots).
 
         Returns:
             A list of (check_name, passed, message) tuples.
@@ -94,11 +105,14 @@ class DescriptionAnalyzer:
         else:
             results.append(("test_mention", False, "No mention of testing -- describe how this was tested"))
 
-        # Screenshots
+        # Screenshots - only check when PR touches UI files
+        has_ui_changes = changed_files is None or any(self._UI_FILE_RE.search(f) for f in (changed_files or []))
         if _SCREENSHOT_RE.search(text):
             results.append(("screenshots", True, "Screenshots/recordings included"))
-        else:
+        elif has_ui_changes:
             results.append(("screenshots", False, "No screenshots -- include them for UI changes"))
+        else:
+            results.append(("screenshots", True, "No UI files changed -- screenshots not required"))
 
         # Breaking changes
         if _BREAKING_RE.search(text):
