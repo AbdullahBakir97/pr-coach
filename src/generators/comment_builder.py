@@ -19,8 +19,7 @@ __all__ = ["CommentBuilder"]
 # the bare check message.
 _CHECK_ADVICE: dict[str, str] = {
     "title_length": (
-        "Aim for 20–72 characters. Long enough to convey the change, short enough "
-        "to fit in a one-line PR list."
+        "Aim for 20-72 characters. Long enough to convey the change, short enough to fit in a one-line PR list."
     ),
     "title_specificity": (
         "Vague titles like 'fix' or 'update' are hard to triage. "
@@ -32,8 +31,7 @@ _CHECK_ADVICE: dict[str, str] = {
         "Allowed types: feat, fix, docs, style, refactor, perf, test, build, ci, chore."
     ),
     "description_presence": (
-        "PRs without a description force reviewers to read the diff cold. Add at least: "
-        "(a) what changed and (b) why."
+        "PRs without a description force reviewers to read the diff cold. Add at least: (a) what changed and (b) why."
     ),
     "description_sections": (
         "Add `## What` and `## Why` sections. Reviewers can skim a structured PR in 30 seconds; "
@@ -60,7 +58,7 @@ _CHECK_ADVICE: dict[str, str] = {
         "removed from the template, or moved to a follow-up issue."
     ),
     "pr_size": (
-        "PRs over 500 lines are 3× harder to review. Consider splitting by concern: "
+        "PRs over 500 lines are 3x harder to review. Consider splitting by concern: "
         "(1) refactor PR, (2) feature PR, (3) tests/docs PR. Smaller PRs get reviewed faster."
     ),
     "file_count": (
@@ -135,14 +133,12 @@ class CommentBuilder:
         if analysis.quality_level == QualityLevel.EXCELLENT:
             indicator = "🟢"
             opener = (
-                f"This PR is well-formed — {passed}/{total} checks pass and the structure makes "
-                "review straightforward."
+                f"This PR is well-formed — {passed}/{total} checks pass and the structure makes review straightforward."
             )
         elif analysis.quality_level == QualityLevel.GOOD:
             indicator = "🟢"
             opener = (
-                f"Solid PR — {passed}/{total} checks pass. A couple of minor items below if "
-                "you want to polish further."
+                f"Solid PR — {passed}/{total} checks pass. A couple of minor items below if you want to polish further."
             )
         elif analysis.quality_level == QualityLevel.FAIR:
             indicator = "🟡"

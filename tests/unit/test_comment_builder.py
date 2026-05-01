@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
+from typing import ClassVar
+
 import pytest
 
 from src.domain.entities import CheckResult, PRAnalysis
 from src.domain.enums import CheckConclusion, PRSize, QualityLevel
 from src.generators.comment_builder import CommentBuilder
-
 
 # ------------------------------------------------------------------ #
 # Helpers
@@ -261,7 +262,7 @@ class TestContextualTip:
 
 
 class TestVoiceQuality:
-    AI_TRIGGERS = [
+    AI_TRIGGERS: ClassVar[list[str]] = [
         "I'd be happy to",
         "hope this helps",
         "feel free to reach out",
@@ -287,9 +288,7 @@ class TestVoiceQuality:
         lowered = comment.lower()
 
         for phrase in self.AI_TRIGGERS:
-            assert phrase.lower() not in lowered, (
-                f"Comment contains AI-style phrase '{phrase}'"
-            )
+            assert phrase.lower() not in lowered, f"Comment contains AI-style phrase '{phrase}'"
 
     def test_uses_imperative_advice(self, builder):
         analysis = _analysis(
